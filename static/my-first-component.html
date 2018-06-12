@@ -1,0 +1,28 @@
+<template id='my-first-template'>
+    <style>
+        h1 {
+            color: green
+        }
+    </style>
+    <h1 id='componentHeader'>Tra la la. This is a header from a template which should be rendered as a shadow DOM element</h1>
+    <slot></slot>
+    <!-- slot here enables display of the children inside <my-first-component>-->
+</template>
+<script>
+    class MyFirstComponent extends HTMLElement {
+        constructor() {
+            super();
+            let shadowdom = this.attachShadow({ mode: 'open' });
+            let template = document.currentScript.ownerDocument.getElementById('my-first-template');
+            let templateHtml = template.content.cloneNode(true); //deep clone true
+            shadowdom.appendChild(templateHtml);
+        }
+        //connectedElement: event handler called every time an element is added on the page.
+        connectedCallback() {
+            console.log("comp: ", document.getElementById('componentHeader')) // not printed because its a shadow, and not added to dom
+            console.log("doc: ", document.getElementById('documentHeader'))
+            console.log("comp as shadow: ", this.shadowRoot.getElementById('componentHeader')) // works
+        }
+    }
+    customElements.define('my-first-component', MyFirstComponent);
+</script>
